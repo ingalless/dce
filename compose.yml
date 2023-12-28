@@ -1,0 +1,40 @@
+version: "3"
+services:
+    web:
+        container_name: 'cp_web'
+        build:
+            dockerfile: ./docker/php-apache/Dockerfile
+            context: .
+            args:
+                USER_ID: 1000
+                GROUP_ID: 1000
+        networks:
+            - backend
+        ports:
+            - "8080:80"
+        volumes:
+            - ./:/var/www
+    mssql:
+        image: mcr.microsoft.com/azure-sql-edge:latest
+        environment:
+            - ACCEPT_EULA=Y
+            - MSSQL_PID=Premium
+            - MSSQL_SA_PASSWORD=securepassword123!
+            - SQLCMDPASSWORD=securepassword123!
+        networks:
+            - backend
+        ports:
+            - "1433:1433"
+        volumes:
+            - db-data:/var/opt/mssql
+    mail:
+        image: tophfr/mailcatcher
+        networks:
+            - backend
+        ports:
+            - "1025:25" # SMTP
+            - "1080:80" # Email client
+networks:
+    backend:
+volumes:
+    db-data:
