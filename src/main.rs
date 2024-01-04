@@ -31,4 +31,6 @@ fn main() {
         .expect("Failed to execute");
 
     child.wait().unwrap();
+
+    crossterm::terminal::disable_raw_mode().unwrap();
 }
